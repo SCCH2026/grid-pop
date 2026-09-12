@@ -25,6 +25,7 @@ html {
 html, body, #app {
   height: 100%;
   min-height: 100%;
+  max-height: 100dvh;
 }
 body {
   background: var(--color-bg);
@@ -44,9 +45,23 @@ button:not(:disabled),
 
 .gp-menu {
   gap: 12px;
-  justify-content: flex-start;
+  justify-content: flex-end;
   overflow-y: auto;
   overflow-x: hidden;
+}
+.gp-menu-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: min(100%, 420px);
+  padding: 0 18px;
+  box-sizing: border-box;
+  z-index: 1;
 }
 .gp-splash-logo {
   width: min(92%, 420px);
@@ -219,6 +234,22 @@ html[data-gp-cover="off"] .gp-boot-cover {
   font-weight: 700;
 }
 
+@media (min-width: 640px) {
+  .gp-legal {
+    align-items: center;
+  }
+  .gp-legal .gp-sheet-head {
+    align-self: stretch;
+    width: 100%;
+  }
+  .gp-legal-card {
+    align-self: center;
+    width: min(100%, 560px);
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
 .gp-ad-live {
   display: block;
   min-height: 90px;
@@ -248,5 +279,201 @@ html:not([data-gp-cover="off"]) ins.adsbygoogle-noablate {
   display: none !important;
   pointer-events: none !important;
   visibility: hidden !important;
+}
+
+/* Fit the playfield to the viewport: board is a contained square in leftover space. */
+/* Pin the app to the viewport even if a third-party script (AdSense) forces height:auto. */
+html, body {
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+}
+.gp-root {
+  display: flex;
+  flex-direction: column;
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100% !important;
+  max-width: none;
+  overflow: hidden;
+}
+.gp-splash,
+.gp-screen,
+.gp-play {
+  flex: 1 1 0%;
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  max-height: 100%;
+}
+.gp-play {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto auto minmax(0, 1fr) auto auto;
+  justify-items: center;
+  align-items: stretch;
+  gap: 6px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+.gp-play .gp-hud,
+.gp-play .gp-score-slot,
+.gp-play .gp-board-slot,
+.gp-play .gp-tray,
+.gp-play .gp-play-ad {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  justify-self: stretch;
+}
+.gp-board-slot {
+  min-height: 0;
+  min-width: 0;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  align-self: stretch;
+}
+.gp-board-wrap {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  aspect-ratio: 1;
+  flex: none;
+}
+.gp-tray {
+  height: clamp(4.6rem, 16dvh, 7.6rem);
+  min-height: 4.6rem;
+  max-height: 8rem;
+  flex: none;
+}
+.gp-play-ad {
+  max-height: 92px;
+  min-height: 0;
+  overflow: hidden;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  margin-top: 0;
+}
+.gp-play .gp-ad-live {
+  min-height: 52px;
+  max-height: 88px;
+  padding: 12px 8px 6px;
+}
+.gp-play .gp-adsense-ins,
+.gp-play ins.adsbygoogle {
+  min-height: 50px;
+  max-height: 66px;
+  overflow: hidden;
+}
+
+@media (max-height: 680px) {
+  .gp-play-ad {
+    display: none;
+  }
+  .gp-score-slot {
+    min-height: 3.1rem;
+  }
+  .gp-score-hero {
+    font-size: clamp(2rem, 8vw, 2.8rem);
+  }
+}
+
+@media (max-height: 540px) {
+  .gp-tray {
+    height: 4.4rem;
+    min-height: 4.4rem;
+  }
+  .gp-play {
+    padding-top: calc(env(safe-area-inset-top) + 4px);
+    padding-bottom: calc(env(safe-area-inset-bottom) + 4px);
+    gap: 4px;
+  }
+}
+
+/* Landscape / desktop: board on the left, chrome on the right so the 8×8 grid stays whole. */
+@media (orientation: landscape) and (min-width: 640px) {
+  .gp-play {
+    grid-template-columns: minmax(0, 1fr) minmax(210px, 300px);
+    grid-template-rows: auto auto minmax(0, 1fr) auto;
+    column-gap: 18px;
+    row-gap: 8px;
+    padding-left: max(16px, 2vw);
+    padding-right: max(16px, 2vw);
+    justify-items: stretch;
+  }
+  .gp-play .gp-hud {
+    grid-area: 1 / 1 / 2 / 3;
+    width: 100%;
+    max-width: none;
+  }
+  .gp-play .gp-score-slot {
+    grid-area: 2 / 2 / 3 / 3;
+    width: 100%;
+    max-width: none;
+    min-height: 3.2rem;
+  }
+  .gp-play .gp-board-slot {
+    grid-area: 2 / 1 / 5 / 2;
+    width: 100%;
+    max-width: none;
+  }
+  .gp-play .gp-tray {
+    grid-area: 3 / 2 / 4 / 3;
+    width: 100%;
+    max-width: none;
+    height: auto;
+    min-height: 5.2rem;
+    max-height: none;
+  }
+  .gp-play .gp-play-ad {
+    grid-area: 4 / 2 / 5 / 3;
+    width: 100%;
+    max-width: none;
+  }
+  .gp-play .gp-score-hero {
+    font-size: clamp(2.1rem, 4.5vw, 3.1rem);
+  }
+}
+
+@media (orientation: landscape) and (min-width: 640px) and (max-height: 520px) {
+  .gp-play-ad {
+    display: none;
+  }
+}
+
+.gp-menu-ad-slot {
+  flex: 0 0 min(72px, 16.666dvh);
+  align-self: center;
+  width: min(100%, 420px);
+  height: min(72px, 16.666dvh);
+  max-height: 16.666dvh;
+  margin-top: auto;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+.gp-menu-ad-slot .gp-ad,
+.gp-menu-ad-slot .gp-ad-live,
+.gp-menu-ad {
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+  min-height: 0;
+  margin: 0;
+  padding: 10px 8px 6px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.gp-menu-ad-slot .gp-adsense-ins,
+.gp-menu-ad-slot ins.adsbygoogle {
+  display: block;
+  width: 100%;
+  height: calc(100% - 4px);
+  max-height: 100%;
+  min-height: 0;
+  overflow: hidden;
 }
 

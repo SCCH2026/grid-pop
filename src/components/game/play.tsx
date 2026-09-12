@@ -14,8 +14,6 @@ const BOARD_GAP = 3;
 const TRAY_SCALE = 0.8;
 const TRAY_GAP = 1;
 const TRAY_PAD = 8;
-const MIN_TRAY = 72;
-const MIN_BOARD = 168;
 const HIT = 64;
 
 interface DragState {
@@ -55,8 +53,10 @@ export function Play() {
 
   const boardRef = useRef<HTMLDivElement>(null);
   const playRef = useRef<HTMLDivElement>(null);
+  const slotRef = useRef<HTMLDivElement>(null);
+  const trayRef = useRef<HTMLDivElement>(null);
   const [cell, setCell] = useState(36);
-  const [boardSide, setBoardSide] = useState(300);
+  const [boardSide, setBoardSide] = useState(280);
   const [trayCell, setTrayCell] = useState(28);
   const [drag, setDrag] = useState<DragState | null>(null);
   const [scorePop, setScorePop] = useState(0);
@@ -81,38 +81,27 @@ export function Play() {
     return () => window.clearTimeout(tmr);
   }, [restored]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const root = playRef.current;
-    if (!root) return;
+    const slot = slotRef.current;
+    const tray = trayRef.current;
+    if (!root || !slot) return;
+
     const run = () => {
-      const hud = root.querySelector(".gp-hud") as HTMLElement | null;
-      const scoreEl = root.querySelector(".gp-score-slot") as HTMLElement | null;
-      const ad = root.querySelector(".gp-play-ad") as HTMLElement | null;
-      const cs = getComputedStyle(root);
-      const padX = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight);
-      const padY = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
-      const gap = parseFloat(cs.rowGap || cs.gap) || 4;
-      const contentW = Math.max(0, root.clientWidth - padX);
-      const innerH = Math.max(0, root.clientHeight - padY);
-      const hudH = hud?.offsetHeight ?? 0;
-      const scoreH = scoreEl?.offsetHeight ?? 0;
-      const adH =
-        ad && getComputedStyle(ad).display !== "none" ? ad.offsetHeight : 0;
-      const leftover = innerH - hudH - scoreH - adH - gap * 4;
-      const target = Math.round(contentW);
-      let side: number;
-      if (leftover < MIN_BOARD + MIN_TRAY) {
-        side = Math.max(120, Math.min(target, leftover - 44));
-      } else {
-        side = Math.max(MIN_BOARD, Math.min(target, leftover - MIN_TRAY));
-      }
-      setBoardSide(Math.round(side));
-
+      const sw = slot.clientWidth;
+      const sh = slot.clientHeight;
+      if (sw < 32 || sh < 32) return;
+      const side = Math.max(96, Math.floor(Math.min(sw, sh)));
+      setBoardSide((prev) => (Math.abs(prev - side) < 1 ? prev : side));
       const boardCell = (side - 10 - BOARD_GAP * (BOARD_SIZE - 1)) / BOARD_SIZE;
-      setCell(Math.max(12, boardCell));
+      setCell((prev) => {
+        const next = Math.max(8, boardCell);
+        return Math.abs(prev - next) < 0.2 ? prev : next;
+      });
 
-      const trayH = Math.max(MIN_TRAY, leftover - side);
-      const slotW = contentW / 3;
+      const trayH = tray?.clientHeight || 72;
+      const trayW = tray?.clientWidth || sw;
+      const slotW = Math.max(40, trayW / 3);
       let maxH = 1;
       let maxW = 1;
       for (const p of pieces) {
@@ -123,12 +112,25 @@ export function Play() {
       const preferred = boardCell * TRAY_SCALE;
       const fitH = (trayH - TRAY_PAD * 2 - (maxH - 1) * TRAY_GAP) / maxH;
       const fitW = (slotW - 12 - (maxW - 1) * TRAY_GAP) / maxW;
-      setTrayCell(Math.max(8, Math.min(preferred, fitH, fitW)));
+      const nextTray = Math.max(8, Math.min(preferred, fitH, fitW));
+      setTrayCell((prev) => (Math.abs(prev - nextTray) < 0.2 ? prev : nextTray));
     };
+
     run();
     const ro = new ResizeObserver(run);
     ro.observe(root);
-    return () => ro.disconnect();
+    ro.observe(slot);
+    if (tray) ro.observe(tray);
+    const ad = root.querySelector(".gp-play-ad");
+    if (ad) ro.observe(ad);
+    window.addEventListener("resize", run);
+    const mq = window.matchMedia("(orientation: landscape)");
+    mq.addEventListener("change", run);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", run);
+      mq.removeEventListener("change", run);
+    };
   }, [pieces]);
 
   useEffect(() => {
@@ -387,7 +389,7 @@ export function Play() {
 
       {showRestored ? <p className="gp-restore">{t(lang, "saved")}</p> : null}
 
-      <div className="gp-board-slot">
+      <div className="gp-board-slot" ref={slotRef}>
         <div className="gp-board-wrap" style={{ width: boardSide, height: boardSide }}>
           <div
             ref={boardRef}
@@ -419,7 +421,7 @@ export function Play() {
         </div>
       </div>
 
-      <div className="gp-tray">
+      <div className="gp-tray" ref={trayRef}>
         {pieces.map((piece, i) => (
           <div key={piece ? piece.id : `empty-${i}`} className="gp-tray-slot">
             {piece ? (
@@ -536,7 +538,7 @@ export function Play() {
       ) : null}
 
       <InterstitialAd lang={lang} open={showInterstitial} onDone={finishInterstitial} />
-      <AdBanner lang={lang} className="gp-play-ad" />
+      <AdBanner lang={lang} className="gp-play-ad" format="horizontal" />
     </div>
   );
 }

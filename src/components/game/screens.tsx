@@ -3,7 +3,7 @@ import { BookOpen, ChevronLeft, ChevronRight, FileText, Mail, Music2, RotateCcw,
 import { LANG_OPTIONS, t } from "@/lib/game/i18n";
 import { useGridPop } from "@/lib/game/store";
 import { sfx, unlockAudio } from "@/lib/game/audio";
-import { AdBanner } from "./ads";
+import { MenuAdSlot } from "./ads";
 import { GameLogo } from "./icons";
 import { SITE } from "@/lib/game/site";
 import { contactCopy, legalSections } from "@/lib/game/legal";
@@ -16,41 +16,43 @@ export function Menu() {
 
   return (
     <div className="gp-screen gp-menu">
-      <GameLogo className="gp-cover gp-menu-logo" />
-      <h1 className="sr-only">Grid Pop!</h1>
-      <div className="gp-menu-actions">
-        <button
-          type="button"
-          className="gp-btn gp-btn-primary"
-          onClick={() => {
-            try {
-              unlockAudio();
-            } catch {
-              /* ignore */
-            }
-            try {
+      <div className="gp-menu-center">
+        <GameLogo className="gp-cover gp-menu-logo" />
+        <h1 className="sr-only">Grid Pop!</h1>
+        <div className="gp-menu-actions">
+          <button
+            type="button"
+            className="gp-btn gp-btn-primary"
+            onClick={() => {
+              try {
+                unlockAudio();
+              } catch {
+                /* ignore */
+              }
+              try {
+                sfx.tap();
+              } catch {
+                /* ignore */
+              }
+              startGame();
+            }}
+          >
+            {t(lang, "play")}
+          </button>
+          <button
+            type="button"
+            className="gp-btn gp-btn-secondary"
+            onClick={() => {
               sfx.tap();
-            } catch {
-              /* ignore */
-            }
-            startGame();
-          }}
-        >
-          {t(lang, "play")}
-        </button>
-        <button
-          type="button"
-          className="gp-btn gp-btn-secondary"
-          onClick={() => {
-            sfx.tap();
-            openSettings();
-          }}
-        >
-          {t(lang, "settings")}
-        </button>
+              openSettings();
+            }}
+          >
+            {t(lang, "settings")}
+          </button>
+        </div>
+        <LegalLinks />
       </div>
-      <LegalLinks />
-      <AdBanner lang={lang} className="mt-auto" />
+      <MenuAdSlot lang={lang} />
     </div>
   );
 }
@@ -192,7 +194,7 @@ export function Settings() {
         <LegalRow screen="contact" icon={<Mail className="gp-set-ico" />} label={t(lang, "contact")} />
       </div>
 
-      <AdBanner lang={lang} className="mt-auto" />
+      <MenuAdSlot lang={lang} />
     </div>
   );
 }

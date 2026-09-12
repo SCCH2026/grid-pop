@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { t } from "@/lib/game/i18n";
 import type { Lang } from "@/lib/game/types";
 import { ADSENSE_CLIENT, pushAdSense } from "@/lib/game/adsense";
@@ -9,7 +9,7 @@ function AdSenseUnit({
   format = "auto",
 }: {
   className?: string;
-  format?: "auto" | "rectangle";
+  format?: "auto" | "rectangle" | "horizontal";
 }) {
   const ref = useRef<HTMLModElement>(null);
 
@@ -29,8 +29,8 @@ function AdSenseUnit({
       className={cn("adsbygoogle gp-adsense-ins", className)}
       style={{ display: "block" }}
       data-ad-client={ADSENSE_CLIENT}
-      data-ad-format={format === "rectangle" ? "rectangle" : "auto"}
-      data-full-width-responsive="true"
+      data-ad-format={format}
+      data-full-width-responsive={format === "horizontal" ? "false" : "true"}
     />
   );
 }
@@ -39,10 +39,12 @@ export function AdBanner({
   lang,
   className,
   size = "banner",
+  format = "auto",
 }: {
   lang: Lang;
   className?: string;
   size?: "banner" | "wide";
+  format?: "auto" | "rectangle" | "horizontal";
 }) {
   return (
     <aside
@@ -50,8 +52,39 @@ export function AdBanner({
       aria-label={t(lang, "ad")}
     >
       <span className="gp-ad-tag">{t(lang, "ad")}</span>
-      <AdSenseUnit />
+      <AdSenseUnit format={format} />
     </aside>
+  );
+}
+
+const MENU_AD_H = "min(72px, 16.666dvh)";
+const MENU_AD_MAX = "16.666dvh";
+
+export function MenuAdSlot({ lang }: { lang: Lang }) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const pin = () => {
+      if (el.style.getPropertyValue("height") !== MENU_AD_H) {
+        el.style.setProperty("height", MENU_AD_H, "important");
+      }
+      if (el.style.getPropertyValue("max-height") !== MENU_AD_MAX) {
+        el.style.setProperty("max-height", MENU_AD_MAX, "important");
+      }
+      el.style.setProperty("overflow", "hidden", "important");
+    };
+    pin();
+    const mo = new MutationObserver(pin);
+    mo.observe(el, { attributes: true, attributeFilter: ["style"] });
+    return () => mo.disconnect();
+  }, []);
+
+  return (
+    <div ref={ref} className="gp-menu-ad-slot">
+      <AdBanner lang={lang} className="gp-menu-ad" format="horizontal" />
+    </div>
   );
 }
 
