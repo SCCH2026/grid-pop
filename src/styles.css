@@ -307,34 +307,44 @@ html, body {
   max-height: 100%;
 }
 .gp-play {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: auto auto minmax(0, 1fr) auto auto;
-  justify-items: center;
-  align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
   gap: 6px;
   overflow: hidden;
   box-sizing: border-box;
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  padding-bottom: env(safe-area-inset-bottom);
 }
-.gp-play .gp-hud,
-.gp-play .gp-score-slot,
-.gp-play .gp-board-slot,
-.gp-play .gp-tray,
-.gp-play .gp-play-ad {
+.gp-play .gp-hud {
   width: 100%;
-  max-width: 100%;
+  max-width: none;
+  flex: none;
+  padding-left: 12px;
+  padding-right: 12px;
+  box-sizing: border-box;
+}
+.gp-play .gp-score-slot {
+  margin-top: auto;
+  flex: none;
+  align-self: center;
+  width: min(95vw, 100%);
+  max-width: 95vw;
   min-width: 0;
-  justify-self: stretch;
 }
 .gp-board-slot {
+  flex: none;
+  align-self: center;
   min-height: 0;
   min-width: 0;
-  width: 100%;
-  height: 100%;
+  width: min(95vw, 100%);
+  max-width: 95vw;
+  height: auto;
   display: grid;
   place-items: center;
   overflow: hidden;
-  align-self: stretch;
 }
 .gp-board-wrap {
   width: auto;
@@ -344,33 +354,50 @@ html, body {
   aspect-ratio: 1;
   flex: none;
 }
-.gp-tray {
-  height: clamp(4.6rem, 16dvh, 7.6rem);
+.gp-play .gp-tray {
+  flex: none;
+  align-self: center;
+  width: min(95vw, 100%);
+  max-width: 95vw;
+  height: clamp(4.6rem, 14dvh, 7.2rem);
   min-height: 4.6rem;
   max-height: 8rem;
-  flex: none;
+}
+.gp-play-ad-slot {
+  margin-top: auto;
+  flex: 0 0 46px;
+  width: 100%;
+  height: 46px;
+  max-height: 46px;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 .gp-play-ad {
-  max-height: 92px;
+  width: 100%;
+  height: 100%;
+  max-height: 46px;
   min-height: 0;
   overflow: hidden;
-  padding-top: 4px;
-  padding-bottom: 4px;
+  padding-top: 2px;
+  padding-bottom: 2px;
   margin-top: 0;
 }
 .gp-play .gp-ad-live {
-  min-height: 52px;
-  max-height: 88px;
-  padding: 12px 8px 6px;
+  min-height: 0;
+  max-height: 44px;
+  height: 100%;
+  padding: 8px 8px 4px;
 }
 .gp-play .gp-adsense-ins,
 .gp-play ins.adsbygoogle {
-  min-height: 50px;
-  max-height: 66px;
+  min-height: 0;
+  max-height: 36px;
+  height: 32px;
   overflow: hidden;
 }
 
-@media (max-height: 680px) {
+@media (max-height: 480px) {
+  .gp-play-ad-slot,
   .gp-play-ad {
     display: none;
   }
@@ -391,57 +418,6 @@ html, body {
     padding-top: calc(env(safe-area-inset-top) + 4px);
     padding-bottom: calc(env(safe-area-inset-bottom) + 4px);
     gap: 4px;
-  }
-}
-
-/* Landscape / desktop: board on the left, chrome on the right so the 8×8 grid stays whole. */
-@media (orientation: landscape) and (min-width: 640px) {
-  .gp-play {
-    grid-template-columns: minmax(0, 1fr) minmax(210px, 300px);
-    grid-template-rows: auto auto minmax(0, 1fr) auto;
-    column-gap: 18px;
-    row-gap: 8px;
-    padding-left: max(16px, 2vw);
-    padding-right: max(16px, 2vw);
-    justify-items: stretch;
-  }
-  .gp-play .gp-hud {
-    grid-area: 1 / 1 / 2 / 3;
-    width: 100%;
-    max-width: none;
-  }
-  .gp-play .gp-score-slot {
-    grid-area: 2 / 2 / 3 / 3;
-    width: 100%;
-    max-width: none;
-    min-height: 3.2rem;
-  }
-  .gp-play .gp-board-slot {
-    grid-area: 2 / 1 / 5 / 2;
-    width: 100%;
-    max-width: none;
-  }
-  .gp-play .gp-tray {
-    grid-area: 3 / 2 / 4 / 3;
-    width: 100%;
-    max-width: none;
-    height: auto;
-    min-height: 5.2rem;
-    max-height: none;
-  }
-  .gp-play .gp-play-ad {
-    grid-area: 4 / 2 / 5 / 3;
-    width: 100%;
-    max-width: none;
-  }
-  .gp-play .gp-score-hero {
-    font-size: clamp(2.1rem, 4.5vw, 3.1rem);
-  }
-}
-
-@media (orientation: landscape) and (min-width: 640px) and (max-height: 520px) {
-  .gp-play-ad {
-    display: none;
   }
 }
 

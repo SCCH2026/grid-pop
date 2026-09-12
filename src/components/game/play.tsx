@@ -88,10 +88,18 @@ export function Play() {
     if (!root || !slot) return;
 
     const run = () => {
-      const sw = slot.clientWidth;
-      const sh = slot.clientHeight;
-      if (sw < 32 || sh < 32) return;
-      const side = Math.max(96, Math.floor(Math.min(sw, sh)));
+      const vw = window.innerWidth;
+      const targetW = Math.max(96, Math.floor(Math.min(vw * 0.95, root.clientWidth)));
+      const rootH = root.clientHeight;
+      const hudH = root.querySelector(".gp-hud")?.getBoundingClientRect().height || 0;
+      const scoreH = root.querySelector(".gp-score-slot")?.getBoundingClientRect().height || 0;
+      const trayH = tray?.getBoundingClientRect().height || 72;
+      const adH = root.querySelector(".gp-play-ad-slot")?.getBoundingClientRect().height || 46;
+      const padY =
+        (parseFloat(getComputedStyle(root).paddingTop) || 0) +
+        (parseFloat(getComputedStyle(root).paddingBottom) || 0);
+      const availH = Math.max(96, Math.floor(rootH - hudH - scoreH - trayH - adH - padY - 28));
+      const side = Math.max(96, Math.min(targetW, availH));
       setBoardSide((prev) => (Math.abs(prev - side) < 1 ? prev : side));
       const boardCell = (side - 10 - BOARD_GAP * (BOARD_SIZE - 1)) / BOARD_SIZE;
       setCell((prev) => {
@@ -99,8 +107,8 @@ export function Play() {
         return Math.abs(prev - next) < 0.2 ? prev : next;
       });
 
-      const trayH = tray?.clientHeight || 72;
-      const trayW = tray?.clientWidth || sw;
+      const trayBoxH = tray?.clientHeight || 72;
+      const trayW = side;
       const slotW = Math.max(40, trayW / 3);
       let maxH = 1;
       let maxW = 1;
@@ -110,7 +118,7 @@ export function Play() {
         if (p.shape.w > maxW) maxW = p.shape.w;
       }
       const preferred = boardCell * TRAY_SCALE;
-      const fitH = (trayH - TRAY_PAD * 2 - (maxH - 1) * TRAY_GAP) / maxH;
+      const fitH = (trayBoxH - TRAY_PAD * 2 - (maxH - 1) * TRAY_GAP) / maxH;
       const fitW = (slotW - 12 - (maxW - 1) * TRAY_GAP) / maxW;
       const nextTray = Math.max(8, Math.min(preferred, fitH, fitW));
       setTrayCell((prev) => (Math.abs(prev - nextTray) < 0.2 ? prev : nextTray));
@@ -121,8 +129,15 @@ export function Play() {
     ro.observe(root);
     ro.observe(slot);
     if (tray) ro.observe(tray);
-    const ad = root.querySelector(".gp-play-ad");
-    if (ad) ro.observe(ad);
+    const ad = root.querySelector(".gp-play-ad-slot");
+    if (ad) {
+      if (ad instanceof HTMLElement) {
+        ad.style.setProperty("height", "46px", "important");
+        ad.style.setProperty("max-height", "46px", "important");
+        ad.style.setProperty("overflow", "hidden", "important");
+      }
+      ro.observe(ad);
+    }
     window.addEventListener("resize", run);
     const mq = window.matchMedia("(orientation: landscape)");
     mq.addEventListener("change", run);
@@ -373,7 +388,7 @@ export function Play() {
         </div>
       </header>
 
-      <div className="gp-score-slot">
+      <div className="gp-score-slot" style={{ width: boardSide }}>
         <div key={scorePop} className="gp-score-hero tabular-nums">
           {score.toLocaleString()}
         </div>
@@ -389,7 +404,7 @@ export function Play() {
 
       {showRestored ? <p className="gp-restore">{t(lang, "saved")}</p> : null}
 
-      <div className="gp-board-slot" ref={slotRef}>
+      <div className="gp-board-slot" ref={slotRef} style={{ width: boardSide }}>
         <div className="gp-board-wrap" style={{ width: boardSide, height: boardSide }}>
           <div
             ref={boardRef}
@@ -421,7 +436,7 @@ export function Play() {
         </div>
       </div>
 
-      <div className="gp-tray" ref={trayRef}>
+      <div className="gp-tray" ref={trayRef} style={{ width: boardSide }}>
         {pieces.map((piece, i) => (
           <div key={piece ? piece.id : `empty-${i}`} className="gp-tray-slot">
             {piece ? (
@@ -538,7 +553,9 @@ export function Play() {
       ) : null}
 
       <InterstitialAd lang={lang} open={showInterstitial} onDone={finishInterstitial} />
-      <AdBanner lang={lang} className="gp-play-ad" format="horizontal" />
+      <div className="gp-play-ad-slot">
+        <AdBanner lang={lang} className="gp-play-ad" format="horizontal" />
+      </div>
     </div>
   );
 }
