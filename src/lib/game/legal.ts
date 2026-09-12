@@ -22,7 +22,7 @@ const privacy: Record<Lang, LegalSection[]> = {
     },
     {
       h: "3. 廣告與第三方服務",
-      p: "本遊戲以免費遊玩為主，並可能顯示廣告。網站版可能使用 Google AdSense 等網路廣告；App 版可能使用 Google AdMob 或其他廣告／分析夥伴。\n\n這些夥伴可能使用 Cookie、裝置識別碼或類似技術，以提供廣告、限制重複曝光，或製作匯總統計。他們受自己的私隱政策約束。\n\n你可在裝置設定關閉個人化廣告或限制廣告追蹤。看廣告繼續是自願的，略過或拒絕不會刪除本機進度。",
+      p: "本遊戲以免費遊玩為主，並顯示廣告。網站版使用 Google AdSense。App 版日後可能使用 Google AdMob 或其他廣告／分析夥伴。\n\nGoogle 及廣告夥伴可能使用 Cookie、裝置識別碼或類似技術，以提供廣告、限制重複曝光，或製作匯總統計。他們受自己的私隱政策約束。了解 Google 如何使用資料：https://policies.google.com/technologies/partner-sites\n\n你可在裝置設定關閉個人化廣告或限制廣告追蹤，或使用 https://www.google.com/settings/ads/。看廣告繼續是自願的，略過或拒絕不會刪除本機進度。",
     },
     {
       h: "4. 資料分享",
@@ -64,7 +64,7 @@ const privacy: Record<Lang, LegalSection[]> = {
     },
     {
       h: "3. 广告与第三方服务",
-      p: "本游戏以免费游玩为主，并可能显示广告。网站版可能使用 Google AdSense 等网络广告；App 版可能使用 Google AdMob 或其他广告／分析伙伴。\n\n这些伙伴可能使用 Cookie、装置识别码或类似技术，以提供广告、限制重复曝光，或制作汇总统计。他们受自己的隐私政策约束。\n\n你可在装置设置关闭个性化广告或限制广告追踪。看广告继续是自愿的，跳过或拒绝不会删除本地进度。",
+      p: "本游戏以免费游玩为主，并显示广告。网站版使用 Google AdSense。App 版日后可能使用 Google AdMob 或其他广告／分析伙伴。\n\nGoogle 及广告伙伴可能使用 Cookie、装置识别码或类似技术，以提供广告、限制重复曝光，或制作汇总统计。他们受自己的隐私政策约束。了解 Google 如何使用资料：https://policies.google.com/technologies/partner-sites\n\n你可在装置设置关闭个性化广告或限制广告追踪，或使用 https://www.google.com/settings/ads/。看广告继续是自愿的，跳过或拒绝不会删除本地进度。",
     },
     {
       h: "4. 资料分享",
@@ -106,7 +106,7 @@ const privacy: Record<Lang, LegalSection[]> = {
     },
     {
       h: "3. Advertising and third parties",
-      p: "The game is free to play and may show ads. The website may use networks such as Google AdSense. A future app may use Google AdMob or similar ad / analytics partners.\n\nThose partners may use cookies, device identifiers or similar tools to serve ads, cap frequency or produce aggregate stats. They follow their own privacy policies.\n\nYou can turn off personalised ads or limit ad tracking in device settings. Watching an ad to continue is optional; skipping it does not erase local progress.",
+      p: "The game is free to play and shows ads. The website uses Google AdSense. A future app may use Google AdMob or similar ad / analytics partners.\n\nGoogle and those partners may use cookies, device identifiers or similar tools to serve ads, cap frequency or produce aggregate stats. They follow their own privacy policies. How Google uses data: https://policies.google.com/technologies/partner-sites\n\nYou can turn off personalised ads or limit ad tracking in device settings, or at https://www.google.com/settings/ads/. Watching an ad to continue is optional; skipping it does not erase local progress.",
     },
     {
       h: "4. Sharing",

@@ -218,3 +218,35 @@ html[data-gp-cover="off"] .gp-boot-cover {
   font-size: 0.85rem;
   font-weight: 700;
 }
+
+.gp-ad-live {
+  display: block;
+  min-height: 90px;
+  padding: 16px 8px 8px;
+  overflow: hidden;
+}
+.gp-ad-live ins.adsbygoogle,
+.gp-adsense-ins {
+  display: block;
+  width: 100%;
+  min-height: 72px;
+}
+.gp-interstitial-adsense {
+  background: #1c1220;
+  justify-content: center;
+}
+.gp-adsense-interstitial {
+  width: min(100%, 336px);
+  min-height: 280px;
+  background: #2a1b30;
+  border-radius: 12px;
+}
+html:not(.gp-cover-off) .google-auto-placed,
+html:not(.gp-cover-off) ins.adsbygoogle-noablate,
+html:not([data-gp-cover="off"]) .google-auto-placed,
+html:not([data-gp-cover="off"]) ins.adsbygoogle-noablate {
+  display: none !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+}
+

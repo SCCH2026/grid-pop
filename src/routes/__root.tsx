@@ -1,6 +1,7 @@
 import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
 import { AuthProvider } from "@/lib/auth/provider";
 import { PreviewHostBridge } from "@/components/preview-host-bridge";
+import { ADSENSE_CLIENT, ADSENSE_SCRIPT } from "@/lib/game/adsense";
 import appCss from "../styles.css?url";
 
 const APP_NAME = "Grid Pop!";
@@ -19,12 +20,15 @@ export const Route = createRootRoute({
       { name: "description", content: "A bright block-puzzle game. Drag pieces, pop lines, chase combos." },
       { name: "apple-mobile-web-app-capable", content: "yes" },
       { name: "mobile-web-app-capable", content: "yes" },
+      { name: "google-adsense-account", content: ADSENSE_CLIENT },
     ],
     links: [
       { rel: "icon", type: "image/png", href: "/favicon.png" },
       { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon-32.png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+      { rel: "preconnect", href: "https://pagead2.googlesyndication.com" },
+      { rel: "preconnect", href: "https://googleads.g.doubleclick.net" },
       {
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800&display=swap",
@@ -33,7 +37,14 @@ export const Route = createRootRoute({
       { rel: "manifest", href: "/__grok/manifest.webmanifest" },
       { rel: "apple-touch-icon", href: "/__grok/icon-180.png" },
     ],
-    scripts: [{ src: "/cover-boot.js?v=9" }],
+    scripts: [
+      { src: "/cover-boot.js?v=9" },
+      {
+        src: ADSENSE_SCRIPT,
+        async: true,
+        crossOrigin: "anonymous",
+      },
+    ],
   }),
   component: () => (
     <html lang="zh-HK" suppressHydrationWarning className="antialiased">
